@@ -1,14 +1,14 @@
 import LoginContainer from '@/components/LoginContainer';
 import { TOKEN_COOKIE_KEY } from '@/constants';
 import useUserInfo from '@/hooks/useUserInfo';
-import { UserAdminLoginBody } from '@/interface/serverApi';
+import { ApiAdminUserLoginBodyDto } from '@/interface/serverApi';
 import { message } from '@/utils/notice';
 import { Button, Form, Input, Row, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, history } from 'umi';
 import { login } from './modules';
 
-type LoginBody = UserAdminLoginBody;
+type LoginBody = Required<ApiAdminUserLoginBodyDto>;
 
 export default function Login() {
   const [form] = Form.useForm<LoginBody>();

@@ -12,7 +12,7 @@ import { Pagination, Result, request } from '@/request';
 
 /** 用户列表 */
 export const getUserList = (pagination: Pagination) => {
-  return request.get<UserAdminListResponseDto>(`${AIP_FIX}/admin-user`, {
+  return request.get<UserAdminListResponseDto>(`${AIP_FIX}/user`, {
     params: {
       ...pagination,
     },
@@ -21,17 +21,17 @@ export const getUserList = (pagination: Pagination) => {
 
 /** 详情 */
 export const getUserDetail = (id: number) => {
-  return request.post<UserAdminInfoResponseDto>(`${AIP_FIX}/admin-user/${id}`);
+  return request.post<UserAdminInfoResponseDto>(`${AIP_FIX}/user/${id}`);
 };
 
 /** 创建 */
 export const createUser = (body: UserAdminCreateDto) => {
-  return request.post<UserAdminIdResponseDto>(`${AIP_FIX}/admin-user`, body);
+  return request.post<UserAdminIdResponseDto>(`${AIP_FIX}/user`, body);
 };
 
 /** 修改 */
 export const updateUser = (id: number, body: UserAdminUpdateDto) => {
-  return request.put<UserAdminIdResponseDto>(`${AIP_FIX}/admin-user/${id}`, body);
+  return request.put<UserAdminIdResponseDto>(`${AIP_FIX}/user/${id}`, body);
 };
 
 /** 修改角色 */

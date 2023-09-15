@@ -1,29 +1,25 @@
 import { ConfirmPasswordItem } from '@/components/ConfirmPasswordItem';
 import LoginContainer from '@/components/LoginContainer';
-import { UserAdminCreateRootDto } from '@/interface/serverApi';
+import { ApiAdminInitRootUserBodyDto } from '@/interface/serverApi';
 import { message } from '@/utils/notice';
+import { useRequest } from 'ahooks';
 import { Alert, Button, Form, Input, Popover, Result } from 'antd';
 import { useState } from 'react';
 import { history } from 'umi';
 import { initRootUser } from './modules';
 
-type FormValues = UserAdminCreateRootDto;
+type FormValues = ApiAdminInitRootUserBodyDto;
 
 export default function InitRootUserPage() {
   const [form] = Form.useForm<FormValues>();
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const submitHandler = async (formValue: FormValues) => {
-    setLoading(true);
-    initRootUser(formValue)
-      .then(() => {
-        message.success('超级管理员账户创建成功');
-        setSuccess(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+  const { loading, run: submitHandler } = useRequest(() => {
+    return initRootUser(form.getFieldsValue()).then(() => {
+      message.success('超级管理员账户创建成功');
+      setSuccess(true);
+    });
+  });
+
   return (
     <LoginContainer>
       {success && (
@@ -58,10 +54,10 @@ export default function InitRootUserPage() {
           onFinish={submitHandler}
           style={{ width: 280 }}
           initialValues={{
-            cname: '超级管理员',
+            name: '超级管理员',
           }}
         >
-          <Form.Item name="cname" rules={[{ required: true, message: '请输入超管用户昵称' }]}>
+          <Form.Item name="name" rules={[{ required: true, message: '请输入超管用户昵称' }]}>
             <Input placeholder="请输入超管用户昵称" autoComplete="off" />
           </Form.Item>
           <Popover

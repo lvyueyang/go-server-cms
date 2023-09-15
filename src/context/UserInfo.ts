@@ -1,8 +1,8 @@
-import { UserAdminInfo } from '@/interface/serverApi';
+import { ModelAdminUser } from '@/interface/serverApi';
 import { createContext } from 'react';
 
 interface Options {
-  data?: UserAdminInfo;
+  data?: ModelAdminUser;
   loadInfo?: () => void;
 }
 

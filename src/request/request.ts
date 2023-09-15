@@ -21,7 +21,7 @@ request.interceptors.request.use((config) => {
   const token = localStorage.getItem(TOKEN_COOKIE_KEY);
   if (token) {
     // @ts-ignore
-    config.headers.set('token', token);
+    config.headers.set(TOKEN_COOKIE_KEY, token);
   }
   return config;
 });

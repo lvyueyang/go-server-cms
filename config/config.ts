@@ -5,7 +5,7 @@ export default defineConfig({
   npmClient: 'yarn',
   proxy: {
     '/api': {
-      target: '',
+      target: 'http://127.0.0.1:4002/',
       changeOrigin: true,
       secure: false,
     },

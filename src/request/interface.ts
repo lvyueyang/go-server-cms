@@ -7,7 +7,7 @@ export interface Pagination {
 
 export interface Result<T> {
   code: number;
-  data: T;
+  data: Required<T>;
   msg: string;
 }
 
@@ -17,5 +17,5 @@ export type ListResult<T> = Result<{
   /** 总条数 */
   total: number;
   /** 列表数据 */
-  list: T[];
+  list: Required<T>[];
 }>;

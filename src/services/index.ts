@@ -1,10 +1,10 @@
 import { TOKEN_COOKIE_KEY } from '@/constants';
-import { UserAdminInfoResponseDto } from '@/interface/serverApi';
+import { ModelAdminUser } from '@/interface/serverApi';
 import { AIP_FIX, Result, request } from '@/request';
 
 /** 获取当前登录用户信息 */
 export const getUserInfo = () => {
-  return request.get<UserAdminInfoResponseDto>(`${AIP_FIX}/userinfo`, { ignoreNotice: true });
+  return request.get<Result<ModelAdminUser>>(`${AIP_FIX}/user/current`, { ignoreNotice: true });
 };
 
 /** 退出登录 */

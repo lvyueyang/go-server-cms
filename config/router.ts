@@ -4,6 +4,7 @@ const router = {
   routes: [
     { path: '/login', component: 'login' },
     { path: '/nopassword', component: 'nopassword' },
+    { path: '/init-root-user', component: 'initRootUser' },
     { path: '/', redirect: '/user-admin/user-list' },
     {
       path: '/',
