@@ -1,22 +1,13 @@
 import Header from '@/components/Header';
 import PageContainer from '@/components/PageContainer';
-
-import { NewsInfo } from '@/interface/serverApi';
-
-import { options2ValueEnum, transformPagination, transformSort } from '@/utils';
-
-import { message } from '@/utils/notice';
-
-import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
-
 import { NEWS_TYPE } from '@/constants';
-
+import { NewsInfo } from '@/interface/serverApi';
+import { options2ValueEnum, transformPagination, transformSort } from '@/utils';
+import { message } from '@/utils/notice';
+import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button, Input, Popconfirm, Space } from 'antd';
-
 import { useRef, useState } from 'react';
-
 import { Link, history } from 'umi';
-
 import { getListApi, removeApi } from './module';
 
 type TableItem = NewsInfo;
@@ -61,13 +52,13 @@ export default function NewsListPage() {
       sorter: true,
     },
     {
-      dataIndex: 'create_date',
+      dataIndex: 'created_at',
       title: '创建时间',
       valueType: 'dateTime',
       sorter: true,
     },
     {
-      dataIndex: 'update_date',
+      dataIndex: 'updated_at',
       title: '修改时间',
       valueType: 'dateTime',
       sorter: true,

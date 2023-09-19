@@ -1,18 +1,26 @@
 import { ConfirmPasswordItem } from '@/components/ConfirmPasswordItem';
 import Header from '@/components/Header';
 import PageContainer from '@/components/PageContainer';
+import { ADMIN_USER_STATUS } from '@/constants';
 import { ModalType, useFormModal } from '@/hooks/useFormModal';
-import { UserAdminCreateDto, UserAdminInfo } from '@/interface/serverApi';
-import { transformPagination } from '@/utils';
+import { ApiCreateAdminUserBodyDto, ModelAdminUser } from '@/interface/serverApi';
+import { transConstValue, transformPagination, transformSort } from '@/utils';
 import { message } from '@/utils/notice';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { useRequest } from 'ahooks';
-import { Button, Form, Input, Modal, Space, Spin, Tag, Transfer } from 'antd';
+import { Avatar, Button, Form, Input, Modal, Popconfirm, Space, Spin, Tag, Transfer } from 'antd';
 import { useRef, useState } from 'react';
 import { getListApi as getRoleListApi } from '../adminRole/module/services';
-import { createUser, getUserList, resetpasswordUser, updateRole, updateUser } from './module';
+import {
+  createUser,
+  getUserList,
+  resetPassword,
+  updateRole,
+  updateStatus,
+  updateUser,
+} from './module';
 
-type TableItem = UserAdminInfo;
+type TableItem = ModelAdminUser;
 
 class RoleModalState {
   user?: number;
@@ -24,7 +32,9 @@ class RoleModalState {
 export default function UserAdminList() {
   const tableRef = useRef<ActionType>();
   const [roleModal, setRoleModal] = useState(new RoleModalState());
-
+  const [searchForm, setSearchForm] = useState({
+    keyword: '',
+  });
   const { data: roleList } = useRequest(() => {
     return getRoleListApi({ current: 1, page_size: 10000 }).then((res) => res.data.data.list);
   });
@@ -37,18 +47,18 @@ export default function UserAdminList() {
     formModalClose,
     submitHandler,
     formModalTitle,
-  } = useFormModal<UserAdminCreateDto & { id?: number }>({
+  } = useFormModal<ApiCreateAdminUserBodyDto & { id?: number }>({
     submit: (values, modal) => {
       if (modal.type === ModalType.UPDATE && values.id) {
         return updateUser(values.id, {
-          cname: values.cname,
+          name: values.name,
         }).then(() => {
           tableRef.current?.reload();
         });
       }
 
       if (modal.type === ModalType.OTHER && values.id) {
-        return resetpasswordUser(values.id, {
+        return resetPassword(values.id, {
           password: values.password,
         }).then(() => {
           tableRef.current?.reload();
@@ -57,7 +67,7 @@ export default function UserAdminList() {
       return createUser({
         username: values.username,
         password: values.password,
-        cname: values.cname,
+        name: values.name,
         email: values.email,
       }).then(() => {
         tableRef.current?.reload();
@@ -69,38 +79,68 @@ export default function UserAdminList() {
     {
       dataIndex: 'username',
       title: '用户名',
-      render: (value, row) => {
+      render: (_, row) => {
         return (
-          <>
-            {value} {row.is_root && <Tag color="blue">超级管理员</Tag>}
-          </>
+          <Space>
+            <Avatar size={44} shape="square" src={row.avatar || row.name}>
+              {row.name?.substring(0, 1)}
+            </Avatar>
+            <div>
+              <Space size={1}>
+                <Tag color="blue">{row.id}</Tag>
+                {row.name}
+              </Space>
+              <div>
+                <small>{row.username}</small>
+              </div>
+            </div>
+          </Space>
         );
       },
     },
     {
-      dataIndex: 'cname',
-      title: '姓名',
+      dataIndex: 'id',
+      title: 'ID',
+    },
+    {
+      dataIndex: 'status',
+      title: '状态',
+      render: (_, row) => {
+        const { label, color } =
+          Object.values(ADMIN_USER_STATUS).find((v) => v.value === row.status) || {};
+        return <Tag color={color}>{label}</Tag>;
+      },
+    },
+    {
+      dataIndex: 'role',
+      title: '角色',
+      render: (_, row) => {
+        return row.is_root ? '超级管理员' : '';
+      },
     },
     {
       dataIndex: 'email',
       title: '邮箱',
     },
     {
-      dataIndex: 'create_date',
+      dataIndex: 'created_at',
       title: '创建时间',
       valueType: 'dateTime',
+      sorter: true,
     },
     {
-      dataIndex: 'update_date',
+      dataIndex: 'updated_at',
       title: '修改时间',
       valueType: 'dateTime',
+      sorter: true,
     },
     {
       dataIndex: 'operate',
       title: '操作',
       hideInSearch: true,
-      width: 190,
+      width: 240,
       render: (_, row) => {
+        const operate = transConstValue(ADMIN_USER_STATUS)[row.status === 1 ? -1 : 1];
         return (
           <Space>
             <a
@@ -133,6 +173,24 @@ export default function UserAdminList() {
             >
               重置密码
             </a>
+            {!row.is_root && (
+              <Popconfirm
+                title={
+                  <div>
+                    确定要 <span style={{ color: operate.color }}>{operate.action}</span> 用户{' '}
+                    <b>{row.name}</b> 吗 ？
+                  </div>
+                }
+                onConfirm={() => {
+                  updateStatus(row.id!, operate.value).then(() => {
+                    message.success(operate.action + '完成');
+                    tableRef.current?.reload();
+                  });
+                }}
+              >
+                <a style={{ color: operate.color }}>{operate.action}</a>
+              </Popconfirm>
+            )}
           </Space>
         );
       },
@@ -162,29 +220,34 @@ export default function UserAdminList() {
           rowKey="id"
           bordered
           search={false}
-          request={(params) => {
-            return getUserList(transformPagination(params)).then(({ data }) => {
+          request={(params, sort) => {
+            return getUserList({
+              ...transformPagination(params),
+              ...transformSort(sort),
+              keyword: searchForm.keyword,
+            }).then(({ data }) => {
               return { data: data.data.list, total: data.data.total || 0 };
             });
           }}
+          headerTitle={
+            <Input.Search
+              value={searchForm.keyword}
+              onChange={(e) => {
+                setSearchForm((state) => ({
+                  ...state,
+                  keyword: e.target.value.trim(),
+                }));
+              }}
+              style={{ width: 400 }}
+              placeholder="请输入新闻名称搜索"
+              enterButton={<>搜索</>}
+              onSearch={() => {
+                tableRef.current?.setPageInfo?.({ current: 1 });
+                tableRef.current?.reload();
+              }}
+            />
+          }
           actionRef={tableRef}
-          // headerTitle={
-          //   <Input.Search
-          //     value={searchParams.search_keywords}
-          //     onChange={(e) => {
-          //       setSearchParams((state) => ({
-          //         ...state,
-          //         search_keywords: e.target.value.trim(),
-          //       }));
-          //     }}
-          //     style={{ width: 400 }}
-          //     placeholder="请输入用户名搜索"
-          //     enterButton={<>搜索</>}
-          //     onSearch={() => {
-          //       tableRef.current?.reload();
-          //     }}
-          //   />
-          // }
           toolBarRender={() => [
             <Button
               key="create"
@@ -222,7 +285,7 @@ export default function UserAdminList() {
           <Form.Item name="email" label="邮箱" rules={[{ required: true }]}>
             <Input type="email" disabled={formModal.type !== ModalType.CREATE} />
           </Form.Item>
-          <Form.Item name="cname" label="姓名" rules={[{ required: true }]}>
+          <Form.Item name="name" label="姓名" rules={[{ required: true }]}>
             <Input disabled={formModal.type === ModalType.OTHER} />
           </Form.Item>
           {(formModal.type === ModalType.CREATE || formModal.type === ModalType.OTHER) && (

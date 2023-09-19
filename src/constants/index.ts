@@ -1,3 +1,4 @@
+import { customTheme } from '@/theme';
 import { TypeValue } from '@/types';
 
 /** 用户登录后储存在 cookie 中的 token */
@@ -213,3 +214,20 @@ export const COMMENTS_STATUS = {
   },
 } as const;
 export type COMMENTS_STATUS_ENUM = TypeValue<typeof COMMENTS_STATUS>['value'];
+
+/** 用户状态 */
+export const ADMIN_USER_STATUS = {
+  NORMAL: {
+    value: 1,
+    label: '正常',
+    action: '解封',
+    color: customTheme.colorSuccess,
+  },
+  LOCK: {
+    value: -1,
+    label: '封禁',
+    action: '封禁',
+    color: customTheme.colorError,
+  },
+} as const;
+export type ADMIN_USER_STATUS_ENUM = TypeValue<typeof ADMIN_USER_STATUS>['value'];

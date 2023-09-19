@@ -1,20 +1,20 @@
-import { AIP_FIX } from '@/constants';
+import { ADMIN_USER_STATUS_ENUM, AIP_FIX } from '@/constants';
 import {
-  UserAdminCreateDto,
+  ApiCreateAdminUserBodyDto,
+  ApiResetPasswordAdminUserBodyDto,
   UserAdminIdResponseDto,
   UserAdminInfoResponseDto,
   UserAdminListResponseDto,
   UserAdminUpdateDto,
-  UserAdminUpdatePasswordDto,
   UserAdminUpdateRolesDto,
 } from '@/interface/serverApi';
 import { Pagination, Result, request } from '@/request';
 
 /** 用户列表 */
-export const getUserList = (pagination: Pagination) => {
+export const getUserList = (query: Pagination & { keyword?: string }) => {
   return request.get<UserAdminListResponseDto>(`${AIP_FIX}/user`, {
     params: {
-      ...pagination,
+      ...query,
     },
   });
 };
@@ -25,7 +25,7 @@ export const getUserDetail = (id: number) => {
 };
 
 /** 创建 */
-export const createUser = (body: UserAdminCreateDto) => {
+export const createUser = (body: ApiCreateAdminUserBodyDto) => {
   return request.post<UserAdminIdResponseDto>(`${AIP_FIX}/user`, body);
 };
 
@@ -40,6 +40,13 @@ export const updateRole = (id: number, body: UserAdminUpdateRolesDto) => {
 };
 
 /** 重置密码 */
-export const resetpasswordUser = (id: number, body: UserAdminUpdatePasswordDto) => {
-  return request.post<UserAdminIdResponseDto>(`${AIP_FIX}/admin-user/reset-password/${id}`, body);
+export const resetPassword = (id: number, body: ApiResetPasswordAdminUserBodyDto) => {
+  return request.put<UserAdminIdResponseDto>(`${AIP_FIX}/user/reset-password/${id}`, body);
+};
+
+/** 封禁/解封 */
+export const updateStatus = (id: number, status: ADMIN_USER_STATUS_ENUM) => {
+  return request.put<UserAdminIdResponseDto>(`${AIP_FIX}/user/status/${id}`, {
+    status,
+  });
 };

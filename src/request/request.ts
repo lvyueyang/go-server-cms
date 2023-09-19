@@ -35,17 +35,18 @@ request.interceptors.response.use(
     const response = error.response || {};
     const config = response.config as CustomConfig;
     const data = response.data || {};
+    console.log('🚀 ~ file: request.ts:38 ~ data:', data);
 
     // 忽略身份过期重定向
-    if (data.statusCode !== 200) {
+    if (data.code !== 200) {
       // 是否忽略错误提示
       if (!config.ignoreNotice) {
-        notification.error({ message: data.message });
+        notification.error({ message: data.msg });
       }
       // 是否忽略身份过期跳转登录页
       if (
         !config.ignoreLogin &&
-        data.statusCode === 401 &&
+        data.code === 401 &&
         !ignoreLoginPaths.includes(history.location.pathname)
       ) {
         history.push('/login');

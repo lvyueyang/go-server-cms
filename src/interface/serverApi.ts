@@ -10,6 +10,8 @@
  */
 
 export interface ApiCreateAdminUserBodyDto {
+  /** 头像 */
+  avatar?: string;
   /** 邮箱 */
   email: string;
   /** 姓名 */
@@ -39,8 +41,15 @@ export interface ApiResetPasswordAdminUserBodyDto {
 }
 
 export interface ApiUpdateAdminUserBodyDto {
+  /** 头像 */
+  avatar?: string;
   /** 姓名 */
   name: string;
+}
+
+export interface ApiUpdateAdminUserStatusBodyDto {
+  /** 状态 1-解封 2-封禁 */
+  status: -1 | 1;
 }
 
 export interface ApiAdminInitRootUserBodyDto {
@@ -115,25 +124,22 @@ export enum ConstsCaptchaType {
   CaptchaTypeEmail = 2,
 }
 
-export interface GormDeletedAt {
-  time?: string;
-  /** Valid is true if Time is not NULL */
-  valid?: boolean;
-}
-
 export interface ModelAdminUser {
   avatar?: string;
-  createdAt?: string;
-  deletedAt?: GormDeletedAt;
+  created_at?: string;
   email?: string;
   id?: number;
   /** 是否是超级管理员 */
   is_root?: boolean;
   name?: string;
-  password?: string;
   status?: ConstsAdminUserStatus;
-  updatedAt?: string;
-  user_name?: string;
+  updated_at?: string;
+  username?: string;
+}
+
+export interface RespRList {
+  list?: any[];
+  total?: number;
 }
 
 export interface RespResult {

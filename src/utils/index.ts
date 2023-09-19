@@ -1,3 +1,4 @@
+import { TypeValue } from '@/types';
 import { message } from '@/utils/notice';
 import { ProFieldValueEnumType } from '@ant-design/pro-components';
 import { SortOrder } from 'antd/es/table/interface';
@@ -91,9 +92,27 @@ export function cls(...classList: (string | undefined | boolean)[]) {
   return classList.filter((i) => !!i).join(' ');
 }
 
-export function options2ValueEnum(
-  values: Record<string, { value: string | number; label: string; color?: string }>,
+interface ConstValue {
+  value: string | number;
+  label: string;
+  color?: string;
+  [key: string]: any;
+}
+
+/** 翻转枚举常量，将 value 作为 key */
+export function transConstValue<T extends Record<string, ConstValue> = Record<string, ConstValue>>(
+  values: T,
 ) {
+  const v: Record<string | number, ConstValue> = {};
+  Object.values(values).forEach((item) => {
+    v[item.value] = {
+      ...item,
+    };
+  });
+  return v as Record<TypeValue<typeof values>['value'], TypeValue<typeof values>>;
+}
+
+export function options2ValueEnum(values: Record<string, ConstValue>) {
   const res: ProFieldValueEnumType = {};
   Object.values(values).forEach((item) => {
     res[item.value] = {

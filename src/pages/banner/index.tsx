@@ -51,12 +51,12 @@ export default function BannerListPage() {
       valueEnum: options2ValueEnum(BANNER_STATUS),
     },
     {
-      dataIndex: 'create_date',
+      dataIndex: 'created_at',
       title: '创建时间',
       valueType: 'dateTime',
     },
     {
-      dataIndex: 'update_date',
+      dataIndex: 'updated_at',
       title: '修改时间',
       valueType: 'dateTime',
     },

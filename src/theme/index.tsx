@@ -19,6 +19,7 @@ export const customTheme: Partial<AliasToken> = {
   // sizeStep: 4.5,
   // controlHeight: 36.5,
 };
+console.log('customTheme: ', customTheme);
 
 export const componentsTheme: OverrideToken = {
   // Button: {
