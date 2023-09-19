@@ -1,22 +1,23 @@
 import { AIP_FIX } from '@/constants';
 import {
-  AdminPermissionCodeListResponseDto,
-  AdminRoleIdResponseDto,
-  AdminRoleUpdatePermissionCodeDto,
   ApiCreateAdminRoleBodyDto,
   ApiUpdateAdminRoleBodyDto,
+  ApiUpdateAdminRolePermissionBodyDto,
   ModelAdminRole,
+  PermissionLabelType,
 } from '@/interface/serverApi';
 import { ListResult, Pagination, Result, request } from '@/request';
 
 /** 权限码列表 */
 export const getCodeListApi = () => {
-  return request.get<AdminPermissionCodeListResponseDto>(`${AIP_FIX}/role/codes`, {});
+  return request.get<Result<Record<string, Required<PermissionLabelType>>>>(
+    `${AIP_FIX}/role/permission/codes`,
+  );
 };
 
 /** 修改权限 */
-export const updateCodeApi = (id: number, body: AdminRoleUpdatePermissionCodeDto) => {
-  return request.put<AdminRoleIdResponseDto>(`${AIP_FIX}/role/${id}/codes`, body);
+export const updateCodeApi = (body: ApiUpdateAdminRolePermissionBodyDto) => {
+  return request.put<Result<void>>(`${AIP_FIX}/role/permission/codes`, body);
 };
 
 /** 列表 */

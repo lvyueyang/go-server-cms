@@ -1,10 +1,11 @@
 import Header from '@/components/Header';
 import PageContainer from '@/components/PageContainer';
+import PageTable from '@/components/PageTable';
 import { ModalType, useFormModal } from '@/hooks/useFormModal';
 import { ApiCreateAdminRoleBodyDto, ModelAdminRole } from '@/interface/serverApi';
 import { transformPagination } from '@/utils';
 import { message } from '@/utils/notice';
-import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
+import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { useRequest } from 'ahooks';
 import { Button, Form, Input, Modal, Popconfirm, Space, Spin, Transfer } from 'antd';
 import { useRef, useState } from 'react';
@@ -33,9 +34,15 @@ export default function AdminRoleList() {
 
   const { data: codesList } = useRequest(() => {
     return getCodeListApi().then((res) => {
-      /** 根据 groupName 排序 */
-      res.data.data = res.data.data.sort((a, b) => a.groupName!.localeCompare(b.groupName!));
-      return res.data.data;
+      const list = Object.entries(res.data.data).map(([code, item]) => {
+        return {
+          code,
+          ...item,
+        };
+      });
+      /** 根据 code 排序 */
+      list.sort((a, b) => a.code!.localeCompare(b.code!));
+      return list;
     });
   });
 
@@ -59,7 +66,7 @@ export default function AdminRoleList() {
     if (!codeModal.role) return;
     setCodeModal((state) => ({ ...state, loading: true }));
 
-    updateCodeApi(codeModal.role, { codes })
+    updateCodeApi({ codes, id: codeModal.role })
       .then(() => {
         message.success('权限修改成功');
         tableRef.current?.reload();
@@ -112,7 +119,7 @@ export default function AdminRoleList() {
               onClick={() => {
                 setCodeModal((state) => ({
                   ...state,
-                  values: row.permission_code || [],
+                  values: row.permission_codes,
                   open: true,
                   role: row.id,
                 }));
@@ -154,11 +161,8 @@ export default function AdminRoleList() {
     <>
       <Header />
       <PageContainer>
-        <ProTable<TableItem>
+        <PageTable<TableItem>
           columns={columns}
-          rowKey="id"
-          bordered
-          search={false}
           request={(params) => {
             return getListApi({ ...transformPagination(params) }).then(({ data }) => {
               return { data: data.data.list, total: data.data.total || 0 };
@@ -249,7 +253,7 @@ export default function AdminRoleList() {
               }));
               submitCodeHandler(values);
             }}
-            render={(item) => item.cname}
+            render={(item) => item.label!}
           />
         </Spin>
       </Modal>

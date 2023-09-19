@@ -9,6 +9,13 @@
  * ---------------------------------------------------------------
  */
 
+export interface ApiAdminUserUpdateRolesBodyDto {
+  /** 角色 ID */
+  role_ids: number[];
+  /** 用户 ID */
+  user_id: number;
+}
+
 export interface ApiCreateAdminRoleBodyDto {
   /** 用户名 */
   code: string;
@@ -16,8 +23,6 @@ export interface ApiCreateAdminRoleBodyDto {
   desc?: string;
   /** 姓名 */
   name: string;
-  /** 邮箱 */
-  permission_codes?: string[];
 }
 
 export interface ApiCreateAdminUserBodyDto {
@@ -60,8 +65,13 @@ export interface ApiUpdateAdminRoleBodyDto {
   id: number;
   /** 姓名 */
   name: string;
-  /** 邮箱 */
-  permission_codes?: string[];
+}
+
+export interface ApiUpdateAdminRolePermissionBodyDto {
+  /** 权限码 */
+  codes?: string[];
+  /** 角色 ID */
+  id: number;
 }
 
 export interface ApiUpdateAdminUserBodyDto {
@@ -156,8 +166,9 @@ export interface ModelAdminRole {
   id?: number;
   name?: string;
   /** 权限码 */
-  permissionCodes?: string[];
+  permission_codes?: string[];
   updated_at?: string;
+  users?: ModelAdminUser[];
 }
 
 export interface ModelAdminUser {
@@ -168,9 +179,14 @@ export interface ModelAdminUser {
   /** 是否是超级管理员 */
   is_root?: boolean;
   name?: string;
+  roles?: ModelAdminRole[];
   status?: ConstsAdminUserStatus;
   updated_at?: string;
   username?: string;
+}
+
+export interface PermissionLabelType {
+  label?: string;
 }
 
 export interface RespRList {

@@ -1,10 +1,10 @@
 import { ADMIN_USER_STATUS_ENUM, AIP_FIX } from '@/constants';
 import {
+  ApiAdminUserUpdateRolesBodyDto,
   ApiCreateAdminUserBodyDto,
   ApiResetPasswordAdminUserBodyDto,
   ApiUpdateAdminUserBodyDto,
   ModelAdminUser,
-  UserAdminUpdateRolesDto,
 } from '@/interface/serverApi';
 import { ListResult, Pagination, Result, request } from '@/request';
 
@@ -33,8 +33,8 @@ export const updateUser = (id: number, body: ApiUpdateAdminUserBodyDto) => {
 };
 
 /** 修改角色 */
-export const updateRole = (id: number, body: UserAdminUpdateRolesDto) => {
-  return request.put<Result<void>>(`${AIP_FIX}/admin-user/${id}/role`, body);
+export const updateRole = (body: ApiAdminUserUpdateRolesBodyDto) => {
+  return request.put<Result<void>>(`${AIP_FIX}/user/role`, body);
 };
 
 /** 重置密码 */

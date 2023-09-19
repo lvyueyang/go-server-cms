@@ -1,12 +1,13 @@
 import { ConfirmPasswordItem } from '@/components/ConfirmPasswordItem';
 import Header from '@/components/Header';
 import PageContainer from '@/components/PageContainer';
+import PageTable from '@/components/PageTable';
 import { ADMIN_USER_STATUS } from '@/constants';
 import { ModalType, useFormModal } from '@/hooks/useFormModal';
 import { ApiCreateAdminUserBodyDto, ModelAdminUser } from '@/interface/serverApi';
 import { transConstValue, transformPagination, transformSort } from '@/utils';
 import { message } from '@/utils/notice';
-import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
+import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { useRequest } from 'ahooks';
 import { Avatar, Button, Form, Input, Modal, Popconfirm, Space, Spin, Tag, Transfer } from 'antd';
 import { useRef, useState } from 'react';
@@ -79,6 +80,7 @@ export default function UserAdminList() {
     {
       dataIndex: 'username',
       title: '用户名',
+      width: 200,
       render: (_, row) => {
         return (
           <Space>
@@ -99,12 +101,9 @@ export default function UserAdminList() {
       },
     },
     {
-      dataIndex: 'id',
-      title: 'ID',
-    },
-    {
       dataIndex: 'status',
       title: '状态',
+      width: 100,
       render: (_, row) => {
         const { label, color } =
           Object.values(ADMIN_USER_STATUS).find((v) => v.value === row.status) || {};
@@ -114,8 +113,12 @@ export default function UserAdminList() {
     {
       dataIndex: 'role',
       title: '角色',
-      render: (_, row) => {
-        return row.is_root ? '超级管理员' : '';
+      ellipsis: true,
+      renderText: (_, row) => {
+        if (row.is_root) {
+          return '超级管理员';
+        }
+        return row.roles?.map((r) => r.name).join('，');
       },
     },
     {
@@ -156,7 +159,7 @@ export default function UserAdminList() {
                 onClick={() => {
                   setRoleModal((state) => ({
                     ...state,
-                    values: row.roles.map((item) => item.id.toString()) || [],
+                    values: row.roles?.map((item) => item.id!.toString()) || [],
                     open: true,
                     user: row.id,
                   }));
@@ -201,9 +204,9 @@ export default function UserAdminList() {
     if (!roleModal.user) return;
     setRoleModal((state) => ({ ...state, loading: true }));
 
-    updateRole(roleModal.user, { roles })
+    updateRole({ role_ids: roles, user_id: roleModal.user })
       .then(() => {
-        message.success('权限修改成功');
+        message.success('角色修改成功');
         tableRef.current?.reload();
       })
       .finally(() => {
@@ -215,11 +218,8 @@ export default function UserAdminList() {
     <>
       <Header />
       <PageContainer>
-        <ProTable<TableItem>
+        <PageTable<TableItem>
           columns={columns}
-          rowKey="id"
-          bordered
-          search={false}
           request={(params, sort) => {
             return getUserList({
               ...transformPagination(params),
@@ -239,8 +239,9 @@ export default function UserAdminList() {
                 }));
               }}
               style={{ width: 400 }}
-              placeholder="请输入新闻名称搜索"
+              placeholder="请输入姓名/用户名搜索"
               enterButton={<>搜索</>}
+              allowClear={true}
               onSearch={() => {
                 tableRef.current?.setPageInfo?.({ current: 1 });
                 tableRef.current?.reload();
