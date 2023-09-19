@@ -1,7 +1,7 @@
 import Header from '@/components/Header';
 import PageContainer from '@/components/PageContainer';
 import { ModalType, useFormModal } from '@/hooks/useFormModal';
-import { AdminRoleCreateDto, AdminRoleInfo } from '@/interface/serverApi';
+import { ApiCreateAdminRoleBodyDto, ModelAdminRole } from '@/interface/serverApi';
 import { transformPagination } from '@/utils';
 import { message } from '@/utils/notice';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
@@ -17,8 +17,8 @@ import {
   updateCodeApi,
 } from './module';
 
-type TableItem = AdminRoleInfo;
-type FormValues = AdminRoleCreateDto;
+type TableItem = Required<ModelAdminRole>;
+type FormValues = ApiCreateAdminRoleBodyDto & { id?: number };
 
 class CodeModalState {
   role?: number;
@@ -42,8 +42,9 @@ export default function AdminRoleList() {
   const infoModal = useFormModal<FormValues & { id?: number }>({
     submit: (values, modal) => {
       if (modal.type === ModalType.UPDATE) {
-        return updateApi(Number(values.id), {
+        return updateApi({
           ...values,
+          id: Number(values.id),
         }).then(() => {
           tableRef.current?.reload();
         });
@@ -70,12 +71,17 @@ export default function AdminRoleList() {
   const columns: ProColumns<TableItem>[] = [
     {
       dataIndex: 'id',
-      title: '角色 ID',
+      title: 'ID',
       width: 100,
     },
     {
       dataIndex: 'name',
       title: '角色名称',
+      width: 140,
+    },
+    {
+      dataIndex: 'code',
+      title: '角色编码',
       width: 140,
     },
     {
@@ -123,7 +129,7 @@ export default function AdminRoleList() {
               编辑
             </a>
             <Popconfirm
-              title="确定要删除这个系统镜像吗？"
+              title={`确定要删除角色 ${row.name} 吗？`}
               onConfirm={() => {
                 const close = message.loading('删除中...', 0);
                 removeApi(row.id)
@@ -183,16 +189,23 @@ export default function AdminRoleList() {
         okButtonProps={{
           loading: infoModal.submitLoading,
         }}
-        width={700}
+        width={400}
       >
         <br />
-        <Form form={infoModal.form} labelCol={{ span: 6 }} initialValues={{ is_stable: false }}>
+        <Form
+          form={infoModal.form}
+          labelCol={{ flex: '80px' }}
+          initialValues={{ is_stable: false }}
+        >
           {infoModal.formModal.type === ModalType.UPDATE && (
             <Form.Item name="id" hidden>
               <Input />
             </Form.Item>
           )}
           <Form.Item name="name" label="角色名称" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="code" label="角色编码" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
           <Form.Item name="desc" label="描述">

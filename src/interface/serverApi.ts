@@ -9,6 +9,17 @@
  * ---------------------------------------------------------------
  */
 
+export interface ApiCreateAdminRoleBodyDto {
+  /** 用户名 */
+  code: string;
+  /** 描述 */
+  desc?: string;
+  /** 姓名 */
+  name: string;
+  /** 邮箱 */
+  permission_codes?: string[];
+}
+
 export interface ApiCreateAdminUserBodyDto {
   /** 头像 */
   avatar?: string;
@@ -38,6 +49,19 @@ export interface ApiCreateCaptchaReqDto {
 export interface ApiResetPasswordAdminUserBodyDto {
   /** 密码 */
   password: string;
+}
+
+export interface ApiUpdateAdminRoleBodyDto {
+  /** 用户名 */
+  code: string;
+  /** 描述 */
+  desc?: string;
+  /** 角色 ID */
+  id: number;
+  /** 姓名 */
+  name: string;
+  /** 邮箱 */
+  permission_codes?: string[];
 }
 
 export interface ApiUpdateAdminUserBodyDto {
@@ -122,6 +146,18 @@ export enum ConstsCaptchaScenes {
 export enum ConstsCaptchaType {
   CaptchaTypePhone = 1,
   CaptchaTypeEmail = 2,
+}
+
+export interface ModelAdminRole {
+  /** 角色编号 */
+  code?: string;
+  created_at?: string;
+  desc?: string;
+  id?: number;
+  name?: string;
+  /** 权限码 */
+  permissionCodes?: string[];
+  updated_at?: string;
 }
 
 export interface ModelAdminUser {
