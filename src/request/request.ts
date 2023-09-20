@@ -14,7 +14,7 @@ const request = axios.create({
   baseURL: '/',
 });
 
-const ignoreLoginPaths = ['/login', '/nopassword'].map((p) => `/${p}`);
+const ignoreLoginPaths = [].map((p) => `${p}`);
 
 /** 请求拦截 */
 request.interceptors.request.use((config) => {
@@ -35,7 +35,6 @@ request.interceptors.response.use(
     const response = error.response || {};
     const config = response.config as CustomConfig;
     const data = response.data || {};
-    console.log('🚀 ~ file: request.ts:38 ~ data:', data);
 
     // 忽略身份过期重定向
     if (data.code !== 200) {

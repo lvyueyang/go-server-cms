@@ -13,12 +13,15 @@ type FormValues = ApiAdminInitRootUserBodyDto;
 export default function InitRootUserPage() {
   const [form] = Form.useForm<FormValues>();
   const [success, setSuccess] = useState(false);
-  const { loading, run: submitHandler } = useRequest(() => {
-    return initRootUser(form.getFieldsValue()).then(() => {
-      message.success('超级管理员账户创建成功');
-      setSuccess(true);
-    });
-  });
+  const { loading, run: submitHandler } = useRequest(
+    () => {
+      return initRootUser(form.getFieldsValue()).then(() => {
+        message.success('超级管理员账户创建成功');
+        setSuccess(true);
+      });
+    },
+    { manual: true },
+  );
 
   return (
     <LoginContainer>

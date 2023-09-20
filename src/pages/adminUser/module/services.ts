@@ -48,3 +48,8 @@ export const updateStatus = (id: number, status: ADMIN_USER_STATUS_ENUM) => {
     status,
   });
 };
+
+/** 封禁/解封 */
+export const deleteUser = (id: number) => {
+  return request.delete<Result<void>>(`${AIP_FIX}/user/${id}`);
+};

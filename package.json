@@ -28,7 +28,8 @@
     "ahooks": "^3.7.4",
     "antd": "^5.5.2",
     "axios": "^1.4.0",
-    "react-json-view": "^1.21.3"
+    "react-json-view": "^1.21.3",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

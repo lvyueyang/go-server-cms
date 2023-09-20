@@ -5,7 +5,7 @@ const router = {
     { path: '/login', component: 'login' },
     { path: '/nopassword', component: 'nopassword' },
     { path: '/init-root-user', component: 'initRootUser' },
-    { path: '/', redirect: '/user-admin/user-list' },
+    { path: '/', redirect: '/admin-user/list' },
     {
       path: '/',
       component: '@/layouts/main',
@@ -20,17 +20,17 @@ const router = {
           menuHide: true,
         },
         {
-          path: '/user-admin',
+          path: '/admin-user',
           title: '后台账户管理',
           icon: UserOutlined,
           routes: [
             {
-              path: '/user-admin/user-list',
+              path: '/admin-user/list',
               component: 'adminUser',
               title: '用户列表',
             },
             {
-              path: '/user-admin/role-list',
+              path: '/admin-user/role',
               component: 'adminRole',
               title: '角色管理',
             },
@@ -47,7 +47,7 @@ const router = {
           title: '新闻管理',
           routes: [
             {
-              path: '/news',
+              path: '/news/list',
               title: '新闻列表',
               component: 'news',
             },
@@ -70,7 +70,7 @@ const router = {
           title: '广告位管理',
           routes: [
             {
-              path: '/banner',
+              path: '/banner/list',
               title: '广告列表',
               component: 'banner',
             },

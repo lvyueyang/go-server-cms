@@ -10,6 +10,7 @@ function PageTable<
       search={false}
       bordered
       scroll={{ y: window.innerHeight - 305 }}
+      rowKey="id"
       {...props}
     />
   );

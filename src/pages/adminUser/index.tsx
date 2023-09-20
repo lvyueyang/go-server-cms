@@ -5,6 +5,7 @@ import PageTable from '@/components/PageTable';
 import { ADMIN_USER_STATUS } from '@/constants';
 import { ModalType, useFormModal } from '@/hooks/useFormModal';
 import { ApiCreateAdminUserBodyDto, ModelAdminUser } from '@/interface/serverApi';
+import { customTheme } from '@/theme';
 import { transConstValue, transformPagination, transformSort } from '@/utils';
 import { message } from '@/utils/notice';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -14,6 +15,7 @@ import { useRef, useState } from 'react';
 import { getListApi as getRoleListApi } from '../adminRole/module/services';
 import {
   createUser,
+  deleteUser,
   getUserList,
   resetPassword,
   updateRole,
@@ -141,7 +143,7 @@ export default function UserAdminList() {
       dataIndex: 'operate',
       title: '操作',
       hideInSearch: true,
-      width: 240,
+      width: 250,
       render: (_, row) => {
         const operate = transConstValue(ADMIN_USER_STATUS)[row.status === 1 ? -1 : 1];
         return (
@@ -194,6 +196,21 @@ export default function UserAdminList() {
                 <a style={{ color: operate.color }}>{operate.action}</a>
               </Popconfirm>
             )}
+            <Popconfirm
+              title={
+                <div>
+                  确定要删除管理员 <b>{row.name}</b> 吗 ？
+                </div>
+              }
+              onConfirm={() => {
+                deleteUser(row.id!).then(() => {
+                  message.success('删除完成');
+                  tableRef.current?.reload();
+                });
+              }}
+            >
+              <a style={{ color: customTheme.colorError }}>删除</a>
+            </Popconfirm>
           </Space>
         );
       },

@@ -1,7 +1,7 @@
 import LoginContainer from '@/components/LoginContainer';
 import { TOKEN_COOKIE_KEY } from '@/constants';
-import useUserInfo from '@/hooks/useUserInfo';
 import { ApiAdminUserLoginBodyDto } from '@/interface/serverApi';
+import { useUserinfoStore } from '@/store/userinfo';
 import { message } from '@/utils/notice';
 import { Button, Form, Input, Row, Space } from 'antd';
 import { useEffect, useState } from 'react';
@@ -13,14 +13,14 @@ type LoginBody = Required<ApiAdminUserLoginBodyDto>;
 export default function Login() {
   const [form] = Form.useForm<LoginBody>();
   const [loading, setLoading] = useState(false);
-  const { loadUser } = useUserInfo();
+  const { load: loadUser } = useUserinfoStore();
   const submitHandler = async (formValue: LoginBody) => {
     setLoading(true);
     login(formValue)
       .then(({ data }) => {
         localStorage.setItem(TOKEN_COOKIE_KEY, data.data.token);
         message.success('登录成功');
-        loadUser?.();
+        loadUser();
         history.push('/');
       })
       .finally(() => {

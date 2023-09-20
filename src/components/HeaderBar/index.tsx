@@ -1,6 +1,6 @@
 import LOGO from '@/assets/logo.png';
-import useUserInfo from '@/hooks/useUserInfo';
 import { outLogin } from '@/services';
+import { useUserinfoStore } from '@/store/userinfo';
 import { DownOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { useFullscreen } from 'ahooks';
 import { Avatar, Dropdown } from 'antd';
@@ -11,7 +11,6 @@ import styles from './index.module.less';
 function PageFullscreenButton(props: React.HTMLAttributes<HTMLDivElement>) {
   const ref = useRef(document.body);
   const [isFullscreen, { toggleFullscreen }] = useFullscreen(ref);
-  console.log('isFullscreen: ', isFullscreen);
 
   return (
     <div {...props} onClick={toggleFullscreen}>
@@ -21,7 +20,7 @@ function PageFullscreenButton(props: React.HTMLAttributes<HTMLDivElement>) {
 }
 
 export default function HeaderBar() {
-  const { userInfo } = useUserInfo();
+  const { data: userInfo } = useUserinfoStore();
 
   return (
     <div className={`${styles.headerContainer} header`}>
@@ -59,7 +58,7 @@ export default function HeaderBar() {
             <Avatar src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png">
               Avatar
             </Avatar>
-            <span className={styles.username}>{userInfo?.cname || 'Admin'}</span>
+            <span className={styles.username}>{userInfo?.name || userInfo?.username}</span>
             <DownOutlined style={{ fontSize: 12 }} />
           </div>
         </Dropdown>
