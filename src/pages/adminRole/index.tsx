@@ -3,6 +3,7 @@ import PageContainer from '@/components/PageContainer';
 import PageTable from '@/components/PageTable';
 import { ModalType, useFormModal } from '@/hooks/useFormModal';
 import { ApiCreateAdminRoleBodyDto, ModelAdminRole } from '@/interface/serverApi';
+import { PERMISSION_CODE, Permission } from '@/permission';
 import { transformPagination } from '@/utils';
 import { message } from '@/utils/notice';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -115,42 +116,48 @@ export default function AdminRoleList() {
       render: (_, row) => {
         return (
           <Space>
-            <a
-              onClick={() => {
-                setCodeModal((state) => ({
-                  ...state,
-                  values: row.permission_codes,
-                  open: true,
-                  role: row.id,
-                }));
-              }}
-            >
-              编辑权限
-            </a>
-            <a
-              onClick={() => {
-                infoModal.form.setFieldsValue(row);
-                infoModal.formModalShow(ModalType.UPDATE);
-              }}
-            >
-              编辑
-            </a>
-            <Popconfirm
-              title={`确定要删除角色 ${row.name} 吗？`}
-              onConfirm={() => {
-                const close = message.loading('删除中...', 0);
-                removeApi(row.id)
-                  .then(() => {
-                    message.success('删除成功');
-                    tableRef.current?.reload();
-                  })
-                  .finally(() => {
-                    close();
-                  });
-              }}
-            >
-              <a>删除</a>
-            </Popconfirm>
+            <Permission code={PERMISSION_CODE.ADMIN_ROLE_UPDATE_CODE}>
+              <a
+                onClick={() => {
+                  setCodeModal((state) => ({
+                    ...state,
+                    values: row.permission_codes,
+                    open: true,
+                    role: row.id,
+                  }));
+                }}
+              >
+                编辑权限
+              </a>
+            </Permission>
+            <Permission code={PERMISSION_CODE.ADMIN_ROLE_UPDATE_INFO}>
+              <a
+                onClick={() => {
+                  infoModal.form.setFieldsValue(row);
+                  infoModal.formModalShow(ModalType.UPDATE);
+                }}
+              >
+                编辑
+              </a>
+            </Permission>
+            <Permission code={PERMISSION_CODE.ADMIN_ROLE_DELETE}>
+              <Popconfirm
+                title={`确定要删除角色 ${row.name} 吗？`}
+                onConfirm={() => {
+                  const close = message.loading('删除中...', 0);
+                  removeApi(row.id)
+                    .then(() => {
+                      message.success('删除成功');
+                      tableRef.current?.reload();
+                    })
+                    .finally(() => {
+                      close();
+                    });
+                }}
+              >
+                <a>删除</a>
+              </Popconfirm>
+            </Permission>
           </Space>
         );
       },

@@ -1,6 +1,5 @@
 import { customTheme } from '@/theme';
 import { TypeValue } from '@/types';
-
 /** 用户登录后储存在 cookie 中的 token */
 export const TOKEN_COOKIE_KEY = 'X-Auth-Token';
 
