@@ -9,33 +9,37 @@ export const AIP_FIX = '/api/admin';
 /** 发送验证码类型 */
 export const SEND_VALIDATE_CODE_TYPE = {
   SMS: {
-    id: 'sms',
+    value: 1,
     label: '手机短信',
   },
   EMAIL: {
-    id: 'email',
+    value: 2,
     label: '邮箱',
   },
 } as const;
 
-export type SEND_VALIDATE_CODE_TYPE_ENUM = TypeValue<typeof SEND_VALIDATE_CODE_TYPE>['id'];
+export type SEND_VALIDATE_CODE_TYPE_ENUM = TypeValue<typeof SEND_VALIDATE_CODE_TYPE>['value'];
 
 export const SEND_TYPE = {
   REGISTER: {
-    id: 1,
+    value: 1,
     label: '注册',
   },
   NOPASSWORD: {
-    id: 2,
+    value: 2,
     label: '忘记密码',
   },
-  UPDATE: {
-    id: 3,
-    label: '更新邮箱/手机号',
+  UPDATE_PHONE: {
+    value: 3,
+    label: '更新手机号',
+  },
+  UPDATE_EMAIL: {
+    value: 4,
+    label: '更新邮箱',
   },
 } as const;
 
-export type SEND_TYPE_ENUM = TypeValue<typeof SEND_TYPE>['id'];
+export type SEND_TYPE_ENUM = TypeValue<typeof SEND_TYPE>['value'];
 
 /** 部门 */
 export const DEPARTMENT = {

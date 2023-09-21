@@ -2,6 +2,7 @@ import MessageRoot from '@/utils/notice';
 import { App, ConfigProvider, theme as antdTheme } from 'antd';
 import { OverrideToken } from 'antd/es/theme/interface';
 import { AliasToken } from 'antd/lib/theme/interface';
+import zh from 'antd/locale/zh_CN';
 import React from 'react';
 
 const { defaultConfig } = antdTheme;
@@ -45,6 +46,7 @@ export const componentsTheme: OverrideToken = {
 export function ThemeProvider({ children }: React.PropsWithChildren) {
   return (
     <ConfigProvider
+      locale={zh}
       theme={{
         token: {
           ...customTheme,

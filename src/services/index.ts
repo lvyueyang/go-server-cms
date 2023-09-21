@@ -1,6 +1,8 @@
 import { TOKEN_COOKIE_KEY } from '@/constants';
 import { ModelAdminUser } from '@/interface/serverApi';
 import { AIP_FIX, Result, request } from '@/request';
+import { AxiosProgressEvent } from 'axios';
+import { ApiCreateCaptchaBodyDto } from 'interface/serverApi';
 
 /** 获取当前登录用户信息 */
 export const getUserInfo = () => {
@@ -9,15 +11,14 @@ export const getUserInfo = () => {
 
 /** 退出登录 */
 export const outLogin = () => {
-  return request.post<Result<null>>(`${AIP_FIX}/outlogin`).then(() => {
-    localStorage.removeItem(TOKEN_COOKIE_KEY);
-  });
+  localStorage.removeItem(TOKEN_COOKIE_KEY);
+  return Promise.resolve();
 };
 
 /** 文件上传 */
 export const uploadFile = (
   file: File,
-  options?: { onUploadProgress?: (p: ProgressEvent) => void },
+  options?: { onUploadProgress?: (p: AxiosProgressEvent) => void },
 ) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -26,9 +27,19 @@ export const uploadFile = (
   });
 };
 
+/** 获取图片验证码 */
+export const getImageCaptchaCode = () => {
+  return request.get<Result<string>>(`/api/captcha/image`);
+};
+
+/** 发送验证码 */
+export const sendCaptcha = (body: ApiCreateCaptchaBodyDto) => {
+  return request.post<Result<void>>(`/api/captcha`, body);
+};
+
 /** 发送手机号验证码 */
-export const sendSmsCode = (phone: string) => {
-  return request.post<Result<void>>(`${AIP_FIX}/user/send-code`, { phone });
+export const sendSmsCode = (phone: string, scenes: number) => {
+  return request.post<Result<void>>(`/api/captcha`, { phone, scenes, type: 1 });
 };
 
 /** 发送邮箱验证码 */

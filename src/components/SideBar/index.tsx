@@ -8,7 +8,7 @@ import styles from './index.module.less';
 
 const menuItems = getNavMenu();
 
-export default function SideBar() {
+function useSelectMenu() {
   const [selectKeys, setSelectKeys] = useState<string[]>(() => {
     return [location.pathname];
   });
@@ -25,6 +25,20 @@ export default function SideBar() {
     setOpenKeys(openKeys);
     setSelectKeys(openKeys);
   }, [location.pathname]);
+
+  return {
+    collapsed,
+    openKeys,
+    selectKeys,
+    setSelectKeys,
+    toggleCollapsed,
+    setOpenKeys,
+  };
+}
+
+export default function SideBar() {
+  const { collapsed, openKeys, selectKeys, setSelectKeys, toggleCollapsed, setOpenKeys } =
+    useSelectMenu();
   return (
     <div className={cls(styles.sideBarContainer, collapsed && styles.collapsed)}>
       <Menu

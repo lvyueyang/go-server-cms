@@ -1,16 +1,23 @@
-import { SEND_TYPE_ENUM, SEND_VALIDATE_CODE_TYPE, SEND_VALIDATE_CODE_TYPE_ENUM } from '@/constants';
-import { sendEmailCode, sendSmsCode } from '@/services';
-import { Button, Input, InputProps, Space } from 'antd';
+import { SEND_TYPE_ENUM, SEND_VALIDATE_CODE_TYPE_ENUM } from '@/constants';
+import { sendCaptcha } from '@/services';
+import { message } from '@/utils/notice';
+import { Button, Input, InputProps, Popover, Space } from 'antd';
 import { useRef, useState } from 'react';
+import { ImageCaptcha, ImageCaptchaValue } from '../Captcha/ImageCaptcha';
 
 const DEF_TEST = '发送验证码';
 
 interface SendButtonProps {
   targetValue: string;
   sendType: SEND_VALIDATE_CODE_TYPE_ENUM;
-  actionType?: SEND_TYPE_ENUM;
+  actionType: SEND_TYPE_ENUM;
 }
-export function SendButton({ targetValue, sendType }: SendButtonProps) {
+export function SendButton({ targetValue, sendType, actionType }: SendButtonProps) {
+  const [captcha, setCaptcha] = useState<ImageCaptchaValue>({
+    key: '',
+    value: '',
+  });
+  const [pop, setPop] = useState(false);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [text, setText] = useState(DEF_TEST);
@@ -33,16 +40,18 @@ export function SendButton({ targetValue, sendType }: SendButtonProps) {
 
   const submitHandler = async () => {
     if (loading) return;
-
     try {
       setLoading(true);
       setText('发送中 ...');
-      if (sendType === SEND_VALIDATE_CODE_TYPE.SMS.id) {
-        await sendSmsCode(targetValue);
-      }
-      if (sendType === SEND_VALIDATE_CODE_TYPE.EMAIL.id) {
-        await sendEmailCode(targetValue);
-      }
+      await sendCaptcha({
+        captcha_key: captcha.key,
+        captcha_value: captcha.value,
+        scenes: actionType,
+        type: sendType,
+        value: targetValue,
+      });
+      message.success('发送成功');
+      setPop(false);
       timer.current = 60;
       setDisabled(true);
       looperTimer();
@@ -53,15 +62,40 @@ export function SendButton({ targetValue, sendType }: SendButtonProps) {
   };
 
   return (
-    <Button
-      type="primary"
-      loading={loading}
-      onClick={submitHandler}
-      disabled={!targetValue || disabled}
-      formNoValidate
+    <Popover
+      open={pop}
+      title="请完成图形验证码验证"
+      trigger={!targetValue || disabled ? [] : ['click']}
+      content={
+        <>
+          <ImageCaptcha
+            inputProps={{ style: { width: 120 } }}
+            value={captcha}
+            onChange={setCaptcha}
+          />
+          <div>
+            <Space style={{ marginTop: 10 }}>
+              <Button onClick={() => setPop(false)}>取消</Button>
+              <Button type="primary" onClick={submitHandler}>
+                确定
+              </Button>
+            </Space>
+          </div>
+        </>
+      }
     >
-      {text}
-    </Button>
+      <Button
+        type="primary"
+        loading={loading}
+        disabled={!targetValue || disabled}
+        formNoValidate
+        onClick={() => {
+          setPop(true);
+        }}
+      >
+        {text}
+      </Button>
+    </Popover>
   );
 }
 
@@ -75,9 +109,9 @@ export default function ValidateCodeInput({
   ...props
 }: ValidateCodeInputProps) {
   return (
-    <Space>
+    <div style={{ display: 'flex', gap: 10 }}>
       <Input type="text" placeholder={placeholder} {...props} />
       <SendButton targetValue={targetValue} sendType={sendType} actionType={actionType} />
-    </Space>
+    </div>
   );
 }
