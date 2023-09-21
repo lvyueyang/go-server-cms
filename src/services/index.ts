@@ -22,7 +22,7 @@ export const uploadFile = (
 ) => {
   const formData = new FormData();
   formData.append('file', file);
-  return request.post<Result<string>>(`${AIP_FIX}/upload`, formData, {
+  return request.post<Result<string>>(`${AIP_FIX}/user/upload`, formData, {
     onUploadProgress: options?.onUploadProgress,
   });
 };

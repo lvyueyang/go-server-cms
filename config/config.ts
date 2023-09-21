@@ -9,6 +9,11 @@ export default defineConfig({
       changeOrigin: true,
       secure: false,
     },
+    '/uploadfile': {
+      target: 'http://127.0.0.1:4002/',
+      changeOrigin: true,
+      secure: false,
+    },
   },
   routes: router.routes,
   title: 'template',
