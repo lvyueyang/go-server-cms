@@ -3,16 +3,16 @@ import Header from '@/components/Header';
 import PageContainer from '@/components/PageContainer';
 import UploadImage from '@/components/UploadImage';
 import { NEWS_TYPE } from '@/constants';
-import { NewsUpdateDto } from '@/interface/serverApi';
 import { message } from '@/utils/notice';
 import { useRequest } from 'ahooks';
-import { Button, Card, DatePicker, Form, Input, InputNumber, Row, Select } from 'antd';
+import { Button, Card, DatePicker, Form, Input, InputNumber, Row } from 'antd';
 import dayjs from 'dayjs';
+import { ApiUpdateNewsBodyDto } from 'interface/serverApi';
 import { useEffect } from 'react';
 import { history, useParams } from 'umi';
 import { createApi, getDetailApi, updateApi } from './module';
 
-type FormValues = NewsUpdateDto;
+type FormValues = ApiUpdateNewsBodyDto;
 
 export default function NewsForm() {
   const { id } = useParams();
@@ -21,14 +21,17 @@ export default function NewsForm() {
   const { run: submitHandler, loading } = useRequest(
     async () => {
       const values = form.getFieldsValue();
+      values.push_date = dayjs(values.push_date).format('YYYY-MM-DD HH:mm:ss');
       if (isUpdate) {
-        await updateApi(id, {
+        await updateApi({
           ...values,
+          id: Number(id),
+          push_date: dayjs(values.push_date).format('YYYY-MM-DD HH:mm:ss'),
         });
         message.success('更新成功');
       } else {
         await createApi({ ...values });
-        history.push('/news');
+        history.push('/news/list');
         message.success('创建成功');
       }
     },
@@ -50,7 +53,7 @@ export default function NewsForm() {
 
   return (
     <>
-      <Header title={isUpdate ? '修改新闻' : '新增新闻'} />
+      <Header />
       <PageContainer>
         <Card style={{ maxWidth: 1000, margin: '0 auto' }}>
           <Form<FormValues>
@@ -64,9 +67,6 @@ export default function NewsForm() {
             </Form.Item>
             <Form.Item label="发布日期" name="push_date">
               <DatePicker format={'YYYY-MM-DD HH:mm'} showTime />
-            </Form.Item>
-            <Form.Item label="新闻类型" name="type" rules={[{ required: true }]}>
-              <Select options={Object.values(NEWS_TYPE)} style={{ width: 300 }} />
             </Form.Item>
             <Form.Item
               label="推荐等级"

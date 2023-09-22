@@ -1,4 +1,14 @@
 export const PERMISSION_CODE = {
+  /** 创建新闻 */
+  ADMIN_NEWS_CREATE: 'admin:news:create',
+  /** 删除新闻 */
+  ADMIN_NEWS_DELETE: 'admin:news:delete',
+  /** 查询新闻详情 */
+  ADMIN_NEWS_FIND_DETAIL: 'admin:news:find:detail',
+  /** 查询新闻列表 */
+  ADMIN_NEWS_FIND_LIST: 'admin:news:find:list',
+  /** 修改新闻信息 */
+  ADMIN_NEWS_UPDATE_INFO: 'admin:news:update:info',
   /** 创建管理角色 */
   ADMIN_ROLE_CREATE: 'admin:role:create',
   /** 删除管理角色 */
@@ -28,6 +38,11 @@ export const PERMISSION_CODE = {
 } as const;
 
 export const PERMISSION_MAP = {
+  [PERMISSION_CODE.ADMIN_NEWS_CREATE]: '创建新闻',
+  [PERMISSION_CODE.ADMIN_NEWS_DELETE]: '删除新闻',
+  [PERMISSION_CODE.ADMIN_NEWS_FIND_DETAIL]: '查询新闻详情',
+  [PERMISSION_CODE.ADMIN_NEWS_FIND_LIST]: '查询新闻列表',
+  [PERMISSION_CODE.ADMIN_NEWS_UPDATE_INFO]: '修改新闻信息',
   [PERMISSION_CODE.ADMIN_ROLE_CREATE]: '创建管理角色',
   [PERMISSION_CODE.ADMIN_ROLE_DELETE]: '删除管理角色',
   [PERMISSION_CODE.ADMIN_ROLE_FIND_LIST]: '查询管理角色列表',

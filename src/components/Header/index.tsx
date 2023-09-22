@@ -1,4 +1,5 @@
 import { Breadcrumb, BreadcrumbProps } from 'antd';
+import pathToRegexp from 'path-to-regexp';
 import React from 'react';
 import { useAppData } from 'umi';
 import styles from './index.module.less';
@@ -17,10 +18,11 @@ function getParentNodesByKey(
   path?: string,
   tree: TreeNode[] = [],
   parentNodes: TreeNode[] = [],
-): Omit<TreeNode, 'children'>[] | undefined {
+): Omit<TreeNode, 'children'>[] | void {
   for (const node of tree) {
     const currentNode = { path: node.path, title: node.title };
-    if (node.path === path) {
+
+    if (new RegExp(pathToRegexp(node.path!)).test(path!)) {
       return [...parentNodes, currentNode];
     }
     if (node.children) {
@@ -30,7 +32,7 @@ function getParentNodesByKey(
       }
     }
   }
-  return undefined;
+  return void 0;
 }
 
 export default function Header({ items, children }: React.PropsWithChildren<HeaderProps>) {

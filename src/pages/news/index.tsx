@@ -1,16 +1,15 @@
 import Header from '@/components/Header';
 import PageContainer from '@/components/PageContainer';
-import { NEWS_TYPE } from '@/constants';
-import { NewsInfo } from '@/interface/serverApi';
-import { options2ValueEnum, transformPagination, transformSort } from '@/utils';
+import { transformPagination, transformSort } from '@/utils';
 import { message } from '@/utils/notice';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
-import { Button, Input, Popconfirm, Space } from 'antd';
+import { Button, Input, Popconfirm, Space, Tag } from 'antd';
+import { ModelNews } from 'interface/serverApi';
 import { useRef, useState } from 'react';
 import { Link, history } from 'umi';
 import { getListApi, removeApi } from './module';
 
-type TableItem = NewsInfo;
+type TableItem = ModelNews;
 
 export default function NewsListPage() {
   const [searchForm, setSearchForm] = useState({
@@ -27,12 +26,14 @@ export default function NewsListPage() {
     {
       dataIndex: 'title',
       title: '新闻名称',
-    },
-    {
-      dataIndex: 'type',
-      title: '新闻类型',
-      valueEnum: options2ValueEnum(NEWS_TYPE),
-      filters: true,
+      render: (_, row) => {
+        return (
+          <Space size={1}>
+            <Tag>{row.id}</Tag>
+            {row.title}
+          </Space>
+        );
+      },
     },
     {
       dataIndex: 'recommend',
@@ -76,7 +77,7 @@ export default function NewsListPage() {
               title="确定要删除这个新闻吗？"
               onConfirm={() => {
                 const close = message.loading('删除中...', 0);
-                removeApi(row.id)
+                removeApi(row.id!)
                   .then(() => {
                     message.success('删除成功');
                     tableRef.current?.reload();
@@ -123,7 +124,7 @@ export default function NewsListPage() {
                 }));
               }}
               style={{ width: 400 }}
-              placeholder="请输入新闻名称搜索"
+              placeholder="请输入新闻名称或 ID 搜索"
               enterButton={<>搜索</>}
               onSearch={() => {
                 tableRef.current?.setPageInfo?.({ current: 1 });

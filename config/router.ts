@@ -1,5 +1,3 @@
-import { UserOutlined } from '@ant-design/icons';
-
 const router = {
   routes: [
     { path: '/login', component: 'login' },
@@ -22,7 +20,7 @@ const router = {
         {
           path: '/admin-user',
           title: '后台账户管理',
-          icon: UserOutlined,
+          // icon: UserOutlined,
           routes: [
             {
               path: '/admin-user/list',
@@ -36,11 +34,11 @@ const router = {
             },
           ],
         },
-        {
-          path: '/logger',
-          component: 'logger',
-          title: '系统日志',
-        },
+        // {
+        //   path: '/logger',
+        //   component: 'logger',
+        //   title: '系统日志',
+        // },
 
         {
           path: '/news',
@@ -65,40 +63,40 @@ const router = {
           ],
         },
 
-        {
-          path: '/banner',
-          title: '广告位管理',
-          routes: [
-            {
-              path: '/banner/list',
-              title: '广告列表',
-              component: 'banner',
-            },
-            {
-              path: '/banner/create',
-              title: '新增广告',
-              component: 'banner/form',
-            },
-            {
-              path: '/banner/update/:id',
-              component: 'banner/form',
-              title: '修改广告',
-              menuHide: true,
-            },
-          ],
-        },
+        // {
+        //   path: '/banner',
+        //   title: '广告位管理',
+        //   routes: [
+        //     {
+        //       path: '/banner/list',
+        //       title: '广告列表',
+        //       component: 'banner',
+        //     },
+        //     {
+        //       path: '/banner/create',
+        //       title: '新增广告',
+        //       component: 'banner/form',
+        //     },
+        //     {
+        //       path: '/banner/update/:id',
+        //       component: 'banner/form',
+        //       title: '修改广告',
+        //       menuHide: true,
+        //     },
+        //   ],
+        // },
 
-        {
-          path: '/cominfo',
-          title: '信息管理',
-          routes: [
-            {
-              path: '/cominfo/info',
-              component: 'cominfo/info',
-              title: '公司介绍',
-            },
-          ],
-        },
+        // {
+        //   path: '/cominfo',
+        //   title: '信息管理',
+        //   routes: [
+        //     {
+        //       path: '/cominfo/info',
+        //       component: 'cominfo/info',
+        //       title: '公司介绍',
+        //     },
+        //   ],
+        // },
       ],
     },
     { path: '*', component: '404' },

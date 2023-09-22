@@ -51,6 +51,17 @@ export interface ApiCreateCaptchaBodyDto {
   value: string;
 }
 
+export interface ApiCreateNewsBodyDto {
+  content?: string;
+  cover?: string;
+  desc?: string;
+  /** 发布日期 YYYY-MM-DD HH:mm:ss */
+  push_date?: string;
+  /** 推荐等级 0 为不推荐，数值越大越靠前 */
+  recommend?: number;
+  title: string;
+}
+
 export interface ApiResetPasswordAdminUserBodyDto {
   /** 密码 */
   password: string;
@@ -84,6 +95,19 @@ export interface ApiUpdateAdminUserBodyDto {
 export interface ApiUpdateAdminUserStatusBodyDto {
   /** 状态 1-解封 2-封禁 */
   status: -1 | 1;
+}
+
+export interface ApiUpdateNewsBodyDto {
+  content?: string;
+  cover?: string;
+  desc?: string;
+  /** 角色 ID */
+  id: number;
+  /** 发布日期 YYYY-MM-DD HH:mm:ss */
+  push_date?: string;
+  /** 推荐等级 0 为不推荐，数值越大越靠前 */
+  recommend?: number;
+  title: string;
 }
 
 export interface ApiAdminInitRootUserBodyDto {
@@ -182,10 +206,28 @@ export interface ModelAdminUser {
   /** 是否是超级管理员 */
   is_root?: boolean;
   name?: string;
+  news?: ModelNews[];
   roles?: ModelAdminRole[];
   status?: ConstsAdminUserStatus;
   updated_at?: string;
   username?: string;
+}
+
+export interface ModelNews {
+  /** 作者 */
+  author_id?: number;
+  content?: string;
+  /** 封面 */
+  cover?: string;
+  created_at?: string;
+  desc?: string;
+  id?: number;
+  /** 发布日期 */
+  push_date?: string;
+  /** 推荐等级 */
+  recommend?: number;
+  title?: string;
+  updated_at?: string;
 }
 
 export interface PermissionLabelType {
